@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechHelp FAQ Bot | CodeAlpha Task 3</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+
+    <aside class="side-panel">
+      <div class="brand">
+        <div class="brand-mark">TH</div>
+        <div>
+          <h1>TechHelp Bot</h1>
+          <span class="tagline">CodeAlpha AI Internship &middot; Task 3</span>
+        </div>
+      </div>
+
+      <p class="side-desc">
+        Ask me about password resets, Wi-Fi problems, slow computers,
+        printers, viruses, backups, browsers, or basic hardware issues.
+        I match your question to a knowledge base using TF-IDF + cosine
+        similarity.
+      </p>
+
+      <div class="topic-list">
+        <span class="topic-label">Try asking about</span>
+        <button class="topic-chip" data-q="How do I reset my password?">Password reset</button>
+        <button class="topic-chip" data-q="Why is my Wi-Fi not connecting?">Wi-Fi issues</button>
+        <button class="topic-chip" data-q="Why is my computer running so slow?">Slow computer</button>
+        <button class="topic-chip" data-q="My printer is not printing anything.">Printer problems</button>
+        <button class="topic-chip" data-q="I think my computer has a virus, what should I do?">Virus / malware</button>
+        <button class="topic-chip" data-q="How do I back up my important files?">Backup &amp; recovery</button>
+      </div>
+
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark or light theme">
+        <span class="toggle-dot"></span>
+        <span id="theme-label">Dark mode</span>
+      </button>
+    </aside>
+
+    <main class="chat-panel">
+      <header class="chat-header">
+        <div class="status-dot"></div>
+        <div>
+          <h2>Support Assistant</h2>
+          <span class="status-text">Online &middot; usually replies instantly</span>
+        </div>
+      </header>
+
+      <div id="chat-window" class="chat-window">
+        <div class="message bot">
+          <div class="avatar bot-avatar">TH</div>
+          <div class="bubble">
+            Hi there! 👋 I'm your tech-support FAQ assistant. Ask me anything about
+            passwords, Wi-Fi, slow computers, printers, viruses, backups, browsers,
+            or hardware — I'll do my best to help.
+          </div>
+        </div>
+      </div>
+
+      <form id="chat-form" class="chat-input-row" autocomplete="off">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Type your tech question here..."
+          aria-label="Type your message"
+        />
+        <button type="submit" id="send-btn" aria-label="Send message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 11.5L21 3L12.5 21L10.5 13.5L3 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </form>
+    </main>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

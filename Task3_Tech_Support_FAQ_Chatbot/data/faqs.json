@@ -1,0 +1,82 @@
+[
+  {
+    "question": "How do I reset my password?",
+    "answer": "Go to the login page and click 'Forgot Password'. Enter your registered email address, and you'll receive a link to create a new password. If you don't see the email within a few minutes, check your spam folder."
+  },
+  {
+    "question": "I forgot my account password, what should I do?",
+    "answer": "Use the 'Forgot Password' link on the login screen to reset it via email verification. If you no longer have access to that email, contact support to verify your identity and update your account."
+  },
+  {
+    "question": "Why is my Wi-Fi not connecting?",
+    "answer": "Restart your router and device, then try reconnecting. Make sure you're entering the correct Wi-Fi password and that airplane mode is turned off. If the problem persists, try forgetting the network and reconnecting from scratch."
+  },
+  {
+    "question": "My internet connection keeps dropping, how can I fix it?",
+    "answer": "Check for firmware updates on your router, move closer to the router to rule out signal issues, and disconnect unused devices from the network. If it still drops frequently, contact your internet service provider to check for outages."
+  },
+  {
+    "question": "Why is my computer running so slow?",
+    "answer": "A slow computer is often caused by too many startup programs, low disk space, or background processes. Try closing unused apps, deleting temporary files, running a disk cleanup, and restarting your machine."
+  },
+  {
+    "question": "How can I speed up my laptop?",
+    "answer": "Disable unnecessary startup applications, uninstall unused software, clear your browser cache, and consider upgrading your RAM or switching to an SSD if your hardware is older."
+  },
+  {
+    "question": "I'm having trouble installing a software program.",
+    "answer": "Make sure your operating system meets the software's minimum requirements, temporarily disable antivirus during installation, and run the installer as an administrator. If it still fails, redownload the installer in case the file is corrupted."
+  },
+  {
+    "question": "The installation keeps failing with an error, what can I do?",
+    "answer": "Note down the exact error code, check the software vendor's support page for that specific error, and ensure you have enough free disk space. Restarting your computer before reinstalling often resolves temporary conflicts."
+  },
+  {
+    "question": "My printer is not printing anything.",
+    "answer": "Check that the printer is powered on, connected (via USB or Wi-Fi), and has enough paper and ink or toner. Try restarting both the printer and your computer, and make sure the correct printer is selected as default."
+  },
+  {
+    "question": "How do I fix a printer offline error?",
+    "answer": "Go to your computer's printer settings, right-click your printer, and uncheck 'Use Printer Offline' if it's selected. Restarting the print spooler service or reinstalling the printer driver can also help."
+  },
+  {
+    "question": "I think my computer has a virus, what should I do?",
+    "answer": "Disconnect from the internet to prevent further spread, run a full scan with trusted antivirus software, and remove or quarantine any detected threats. Avoid clicking suspicious links or downloading attachments from unknown senders in the future."
+  },
+  {
+    "question": "How can I protect my computer from malware?",
+    "answer": "Keep your operating system and antivirus software up to date, avoid downloading files from untrusted sources, don't click on suspicious email links, and enable your firewall for an added layer of protection."
+  },
+  {
+    "question": "How do I back up my important files?",
+    "answer": "Use an external hard drive, a USB flash drive, or a cloud backup service like Google Drive or OneDrive to store copies of your important files. Setting up automatic backups ensures you always have a recent copy available."
+  },
+  {
+    "question": "I accidentally deleted a file, can I recover it?",
+    "answer": "First, check your Recycle Bin or Trash folder, as deleted files often go there before permanent removal. If it's not there, data recovery software like Recuva can sometimes restore recently deleted files from your hard drive."
+  },
+  {
+    "question": "My web browser keeps crashing.",
+    "answer": "Clear your browser's cache and cookies, disable or remove unnecessary extensions, and make sure the browser is updated to the latest version. If crashes continue, try reinstalling the browser."
+  },
+  {
+    "question": "Why are web pages loading so slowly in my browser?",
+    "answer": "Slow page loading can be caused by too many open tabs, outdated browser versions, or heavy browser extensions. Try clearing your cache, disabling extensions one by one, and checking your internet speed."
+  },
+  {
+    "question": "My computer won't turn on, what should I check?",
+    "answer": "Make sure the power cable is securely connected and the outlet is working. For laptops, try charging for at least 30 minutes before powering on. If nothing happens, there could be a hardware fault requiring professional repair."
+  },
+  {
+    "question": "My keyboard or mouse isn't working.",
+    "answer": "Check that the device is properly connected via USB or that Bluetooth is paired correctly. Try plugging it into a different port, replacing the batteries if wireless, or testing it on another computer to rule out a hardware fault."
+  },
+  {
+    "question": "How do I update my device drivers?",
+    "answer": "Open Device Manager, right-click the hardware component, and select 'Update driver'. You can also visit the manufacturer's website to download the latest drivers directly for better compatibility and performance."
+  },
+  {
+    "question": "My screen is flickering or showing display issues.",
+    "answer": "Update your graphics card drivers first, as outdated drivers are a common cause. Also check that all video cable connections are secure, and try adjusting your screen refresh rate in display settings."
+  }
+]
