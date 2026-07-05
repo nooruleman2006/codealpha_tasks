@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisionTrack — Object Detection & Tracking</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg:        #0a0c10;
+    --surface:   #111418;
+    --panel:     #181c22;
+    --border:    #252a33;
+    --accent:    #00e5ff;
+    --accent2:   #ff4c6a;
+    --accent3:   #a3f544;
+    --text:      #e8ecf0;
+    --muted:     #5a6272;
+    --label:     #8a94a6;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;align-items:center;justify-content:center;
+  }
+
+  .logo-icon svg { width:18px;height:18px; }
+  .logo span { color: var(--accent); }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .dot.idle { background: var(--muted); animation: none; }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:.4; transform:scale(0.7); }
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 280px 1fr 260px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .left-panel {
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .source-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .src-btn {
+    padding: 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--label);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+
+  .src-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .src-btn.active {
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    color: var(--accent);
+  }
+  .src-btn svg { width:20px;height:20px; }
+
+  .drop-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    padding: 22px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--panel);
+  }
+
+  .drop-zone:hover { border-color: var(--accent); background: rgba(0,229,255,0.04); }
+  .drop-zone p { font-size: 0.78rem; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+  .drop-zone strong { color: var(--accent); }
+  .drop-zone.disabled { opacity: 0.4; pointer-events: none; }
+
+  #rtsp-input-wrap { display: none; flex-direction: column; gap: 8px; }
+  #rtsp-input-wrap.show { display: flex; }
+  #rtsp-url {
+    width: 100%;
+    padding: 9px 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .model-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6272' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  .slider-group { display: flex; flex-direction: column; gap: 14px; }
+  .slider-row { display: flex; flex-direction: column; gap: 6px; }
+  .slider-meta { display: flex; justify-content: space-between; font-size: 0.75rem; }
+  .slider-meta span:first-child { color: var(--label); }
+  .slider-meta span:last-child  { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,229,255,0.5);
+  }
+
+  .toggle-list { display: flex; flex-direction: column; gap: 10px; }
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--label);
+  }
+  .toggle { position: relative; width: 36px; height: 20px; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-track {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 14px; height: 14px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  .toggle input:checked + .toggle-track { background: rgba(0,229,255,0.2); }
+  .toggle input:checked + .toggle-track::after {
+    left: 19px;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(0,229,255,0.6);
+  }
+
+  .run-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--accent);
+    color: #0a0c10;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .run-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,255,0.35); }
+  .run-btn:active { transform: translateY(0); }
+  .run-btn.stop-state { background: var(--accent2); }
+  .run-btn.stop-state:hover { box-shadow: 0 4px 20px rgba(255,76,106,0.35); }
+
+  .center { display: flex; flex-direction: column; background: var(--bg); }
+
+  .video-area {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+    background-size: 40px 40px;
+  }
+
+  .mock-frame {
+    position: relative;
+    width: 640px;
+    height: 360px;
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #video-stream {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+  }
+
+  #idle-message {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 20px;
+  }
+
+  .hud-corner {
+    position: absolute;
+    top: 10px; left: 10px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hud-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    background: rgba(0,0,0,0.6);
+    padding: 2px 8px;
+    border-radius: 3px;
+    border-left: 2px solid var(--accent);
+  }
+
+  .controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .ctrl-btn {
+    display: flex;align-items:center;justify-content:center;
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--label);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.active { border-color: var(--accent); background: rgba(0,229,255,0.1); color: var(--accent); }
+  .ctrl-btn svg { width:16px;height:16px; }
+
+  .time-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .right-panel {
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .right-panel-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .right-panel-header h3 { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+  .obj-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: rgba(0,229,255,0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .detection-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .detection-list::-webkit-scrollbar { width: 4px; }
+  .detection-list::-webkit-scrollbar-track { background: transparent; }
+  .detection-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .empty-state {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 30px 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .det-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    border-left: 3px solid;
+  }
+  .det-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .det-name { font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 6px; text-transform: capitalize; }
+  .det-id { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--muted); }
+  .det-conf { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; }
+  .det-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; }
+  .det-meta-item { font-size: 0.68rem; color: var(--muted); }
+  .det-meta-item span { color: var(--label); font-family: 'JetBrains Mono', monospace; }
+  .conf-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; }
+  .conf-fill { height: 100%; border-radius: 2px; }
+
+  .stats-section { border-top: 1px solid var(--border); padding: 14px; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+  .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--text); }
+  .stat-lbl { font-size: 0.62rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .class-chart { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .class-row { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; }
+  .class-row .cls-name { color: var(--label); width: 60px; text-transform: capitalize; }
+  .class-bar-bg { flex:1; height: 5px; background: var(--border); border-radius: 3px; }
+  .class-bar-fill { height: 100%; border-radius: 3px; }
+  .class-cnt { color: var(--muted); font-family: 'JetBrains Mono', monospace; width: 20px; text-align: right; }
+
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .left-panel, .right-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0c10" stroke-width="2.5">
+        <rect x="2" y="2" width="8" height="8" rx="1"/>
+        <rect x="14" y="2" width="8" height="8" rx="1"/>
+        <rect x="2" y="14" width="8" height="8" rx="1"/>
+        <rect x="14" y="14" width="8" height="8" rx="1"/>
+      </svg>
+    </div>
+    Vision<span>Track</span>
+  </div>
+
+  <div class="status-pill">
+    <div class="dot idle" id="status-dot"></div>
+    <span id="status-text">YOLOv8 + SORT · Idle</span>
+  </div>
+</header>
+
+<main>
+
+  <aside class="left-panel">
+
+    <div>
+      <div class="section-label">Input Source</div>
+      <div class="source-btns" id="source-btns">
+        <button class="src-btn" data-source="video" onclick="selectSource(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.277A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+          Video File
+        </button>
+        <button class="src-btn active" data-source="webcam" onclick="selectSource(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Webcam
+        </button>
+        <button class="src-btn" data-source="image" onclick="selectSource(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+          Image
+        </button>
+        <button class="src-btn" data-source="rtsp" onclick="selectSource(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.277A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><path d="M9 12h.01"/></svg>
+          RTSP
+        </button>
+      </div>
+    </div>
+
+    <div id="upload-section">
+      <div class="section-label">Upload</div>
+      <div class="drop-zone disabled" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5a6272" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <p id="drop-zone-text">Drop video or image here<br><strong>or click to browse</strong></p>
+      </div>
+      <input type="file" id="file-input" style="display:none" onchange="handleFileUpload(event)">
+
+      <div id="rtsp-input-wrap">
+        <input type="text" id="rtsp-url" placeholder="rtsp://192.168.1.10:554/stream">
+        <button class="run-btn" style="padding:9px" onclick="connectRTSP()">Connect Stream</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Model</div>
+      <select class="model-select" id="model-select">
+        <option value="yolov8n.pt">YOLOv8n — Fastest</option>
+        <option value="yolov8s.pt" selected>YOLOv8s — Balanced</option>
+        <option value="yolov8m.pt">YOLOv8m — Accurate</option>
+        <option value="yolov8l.pt">YOLOv8l — High Accuracy</option>
+        <option value="yolov8x.pt">YOLOv8x — Max Accuracy</option>
+      </select>
+    </div>
+
+    <div>
+      <div class="section-label">Detection Settings</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <div class="slider-meta"><span>Confidence Threshold</span><span id="conf-val">0.45</span></div>
+          <input type="range" id="conf-slider" min="0" max="100" value="45" oninput="onConfChange(this.value)">
+        </div>
+        <div class="slider-row">
+          <div class="slider-meta"><span>IoU Threshold</span><span id="iou-val">0.30</span></div>
+          <input type="range" id="iou-slider" min="0" max="100" value="30" oninput="onIouChange(this.value)">
+        </div>
+        <div class="slider-row">
+          <div class="slider-meta"><span>Max Detections</span><span id="maxdet-val">100</span></div>
+          <input type="range" id="maxdet-slider" min="10" max="300" value="100" oninput="onMaxDetChange(this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Tracking Options</div>
+      <div class="toggle-list">
+        <div class="toggle-row">
+          <span>SORT Tracking</span>
+          <label class="toggle"><input type="checkbox" id="toggle-tracking" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span>Bounding Boxes</span>
+          <label class="toggle"><input type="checkbox" id="toggle-boxes" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span>Class Labels</span>
+          <label class="toggle"><input type="checkbox" id="toggle-labels" checked><span class="toggle-track"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <button class="run-btn" id="run-btn" onclick="toggleRun()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <span id="run-btn-text">Run Detection</span>
+    </button>
+
+  </aside>
+
+  <section class="center">
+    <div class="video-area">
+      <div class="mock-frame">
+        <img id="video-stream" src="" alt="video stream">
+        <div id="idle-message">No active source.<br>Select a source and click "Run Detection".</div>
+        <div class="hud-corner" id="hud-corner" style="display:none">
+          <div class="hud-tag" id="hud-model">YOLOv8s · COCO</div>
+          <div class="hud-tag" id="hud-source">Source: —</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <button class="ctrl-btn active" id="play-pause-btn" title="Pause" onclick="toggleRun()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <span class="time-label" id="fps-label">FPS: —</span>
+    </div>
+  </section>
+
+  <aside class="right-panel">
+    <div class="right-panel-header">
+      <h3>Detections</h3>
+      <span class="obj-count" id="obj-count">0 objects</span>
+    </div>
+
+    <div class="detection-list" id="detection-list">
+      <div class="empty-state">No detections yet.</div>
+    </div>
+
+    <div class="stats-section">
+      <div class="section-label" style="margin-bottom:10px">Session Stats</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val" style="color:#00e5ff" id="stat-active">0</div><div class="stat-lbl">Active</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total IDs</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#a3f544" id="stat-fps">0.0</div><div class="stat-lbl">FPS</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#ff4c6a" id="stat-conf">0%</div><div class="stat-lbl">Avg Conf</div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:14px;margin-bottom:8px">By Class</div>
+      <div class="class-chart" id="class-chart">
+        <div class="empty-state" style="padding:10px 0">—</div>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<script>
+  const COLORS = ["#00e5ff", "#a3f544", "#ff4c6a", "#ffa726", "#c792ea", "#7fdbff"];
+  let currentSource = "webcam";
+  let uploadedPath = null;
+  let isRunning = false;
+  let pollInterval = null;
+
+  function colorFor(id) {
+    return COLORS[id % COLORS.length];
+  }
+
+  function selectSource(btn) {
+    document.querySelectorAll(".src-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentSource = btn.dataset.source;
+    uploadedPath = null;
+
+    const dropZone = document.getElementById("drop-zone");
+    const rtspWrap = document.getElementById("rtsp-input-wrap");
+    const dropZoneText = document.getElementById("drop-zone-text");
+
+    rtspWrap.classList.remove("show");
+    dropZone.classList.add("disabled");
+    dropZone.style.display = "block";
+
+    if (currentSource === "video") {
+      dropZone.classList.remove("disabled");
+      dropZoneText.innerHTML = "Drop video file here<br><strong>or click to browse</strong>";
+    } else if (currentSource === "image") {
+      dropZone.classList.remove("disabled");
+      dropZoneText.innerHTML = "Drop image here<br><strong>or click to browse</strong>";
+    } else if (currentSource === "rtsp") {
+      dropZone.style.display = "none";
+      rtspWrap.classList.add("show");
+    }
+  }
+
+  async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("drop-zone-text").innerHTML = "Uploading...";
+
+    try {
+      const res = await fetch("/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.ok) {
+        uploadedPath = data.path;
+        document.getElementById("drop-zone-text").innerHTML =
+          `<strong>${file.name}</strong><br>Uploaded ✓ — ready to run`;
+      } else {
+        document.getElementById("drop-zone-text").innerHTML = `Error: ${data.error}`;
+      }
+    } catch (err) {
+      document.getElementById("drop-zone-text").innerHTML = "Upload failed.";
+    }
+  }
+
+  function connectRTSP() {
+    const url = document.getElementById("rtsp-url").value.trim();
+    if (!url) return;
+    startPipeline();
+  }
+
+  async function toggleRun() {
+    if (isRunning) {
+      await stopPipeline();
+    } else {
+      await startPipeline();
+    }
+  }
+
+  async function startPipeline() {
+    let body = { source: currentSource };
+
+    if (currentSource === "video" || currentSource === "image") {
+      if (!uploadedPath) {
+        alert("Please upload a file first.");
+        return;
+      }
+      body.path = uploadedPath;
+    } else if (currentSource === "rtsp") {
+      const url = document.getElementById("rtsp-url").value.trim();
+      if (!url) {
+        alert("Please enter an RTSP URL.");
+        return;
+      }
+      body.url = url;
+    }
+
+    const res = await fetch("/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (!data.ok) {
+      alert("Failed to start: " + data.error);
+      return;
+    }
+
+    isRunning = true;
+    document.getElementById("video-stream").src = "/video_feed?t=" + Date.now();
+    document.getElementById("video-stream").style.display = "block";
+    document.getElementById("idle-message").style.display = "none";
+    document.getElementById("hud-corner").style.display = "flex";
+    document.getElementById("hud-source").textContent = "Source: " + currentSource;
+    document.getElementById("status-dot").classList.remove("idle");
+    document.getElementById("status-text").textContent = "YOLOv8 + SORT · Running";
+    document.getElementById("run-btn").classList.add("stop-state");
+    document.getElementById("run-btn-text").textContent = "Stop";
+
+    startPolling();
+  }
+
+  async function stopPipeline() {
+    await fetch("/stop", { method: "POST" });
+    isRunning = false;
+    document.getElementById("video-stream").style.display = "none";
+    document.getElementById("video-stream").src = "";
+    document.getElementById("idle-message").style.display = "block";
+    document.getElementById("hud-corner").style.display = "none";
+    document.getElementById("status-dot").classList.add("idle");
+    document.getElementById("status-text").textContent = "YOLOv8 + SORT · Idle";
+    document.getElementById("run-btn").classList.remove("stop-state");
+    document.getElementById("run-btn-text").textContent = "Run Detection";
+    stopPolling();
+  }
+
+  function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(refreshData, 500);
+  }
+
+  function stopPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = null;
+  }
+
+  async function refreshData() {
+    try {
+      const [detRes, statsRes] = await Promise.all([
+        fetch("/detections"),
+        fetch("/stats")
+      ]);
+      const detections = await detRes.json();
+      const stats = await statsRes.json();
+
+      renderDetections(detections);
+      renderStats(stats);
+    } catch (err) {
+      // silent — avoid spamming console during normal polling
+    }
+  }
+
+  function renderDetections(detections) {
+    const list = document.getElementById("detection-list");
+    document.getElementById("obj-count").textContent = `${detections.length} objects`;
+
+    if (detections.length === 0) {
+      list.innerHTML = '<div class="empty-state">No detections yet.</div>';
+      return;
+    }
+
+    list.innerHTML = detections.map(d => {
+      const color = colorFor(d.id);
+      const confPct = Math.round(d.confidence * 100);
+      return `
+        <div class="det-card" style="border-left-color:${color}">
+          <div class="det-header">
+            <div class="det-name" style="color:${color}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+              ${d.class}
+              <span class="det-id">#ID:${String(d.id).padStart(2,'0')}</span>
+            </div>
+            <span class="det-conf" style="color:${color}">${confPct}%</span>
+          </div>
+          <div class="conf-bar"><div class="conf-fill" style="width:${confPct}%;background:${color};"></div></div>
+          <div class="det-meta">
+            <div class="det-meta-item">X,Y <span>${d.x}, ${d.y}</span></div>
+            <div class="det-meta-item">W×H <span>${d.w}×${d.h}</span></div>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function renderStats(stats) {
+    document.getElementById("stat-active").textContent = stats.active;
+    document.getElementById("stat-total").textContent = stats.total_ids;
+    document.getElementById("stat-fps").textContent = stats.fps.toFixed(1);
+    document.getElementById("stat-conf").textContent = stats.avg_conf + "%";
+    document.getElementById("fps-label").textContent = "FPS: " + stats.fps.toFixed(1);
+
+    const chart = document.getElementById("class-chart");
+    const entries = Object.entries(stats.class_counts || {});
+    if (entries.length === 0) {
+      chart.innerHTML = '<div class="empty-state" style="padding:10px 0">—</div>';
+      return;
+    }
+    const maxCount = Math.max(...entries.map(e => e[1]));
+    chart.innerHTML = entries.map(([cls, count], i) => {
+      const color = COLORS[i % COLORS.length];
+      const pct = Math.round((count / maxCount) * 100);
+      return `
+        <div class="class-row">
+          <span class="cls-name">${cls}</span>
+          <div class="class-bar-bg"><div class="class-bar-fill" style="width:${pct}%;background:${color};"></div></div>
+          <span class="class-cnt">${count}</span>
+        </div>`;
+    }).join("");
+  }
+
+  function pushSettings(payload) {
+    fetch("/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  function onConfChange(val) {
+    const conf = (val / 100).toFixed(2);
+    document.getElementById("conf-val").textContent = conf;
+    pushSettings({ conf: parseFloat(conf) });
+  }
+
+  function onIouChange(val) {
+    const iou = (val / 100).toFixed(2);
+    document.getElementById("iou-val").textContent = iou;
+    pushSettings({ iou: parseFloat(iou) });
+  }
+
+  function onMaxDetChange(val) {
+    document.getElementById("maxdet-val").textContent = val;
+    pushSettings({ max_det: parseInt(val) });
+  }
+</script>
+</body>
+</html>
