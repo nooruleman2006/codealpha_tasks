@@ -50,4 +50,4 @@ CodeAlpha is an online internship platform offering hands-on, project-based lear
 ## 📬 Contact
 
 - GitHub: [nooruleman2006](https://github.com/nooruleman2006)
-- LinkedIn: [Noor Ul Eman](https://www.linkedin.com/in/noor-ul-eman)
+- LinkedIn: [Noor Ul Eman](https://www.linkedin.com/in/noor-ul-eman-bb1391334/)
