@@ -1,2 +1,60 @@
-# codealpha_tasks
-AI internship task submissions for CodeAlpha (Artificial Intelligence Track) — includes a chatbot, language translation tool, and object detection project.
+# CodeAlpha Internship Tasks – Artificial Intelligence
+
+This repository contains the tasks completed as part of my **Artificial Intelligence Internship** at [CodeAlpha](https://www.codealpha.tech/).
+
+**Intern:** Noor Ul Eman
+**Domain:** Artificial Intelligence
+**Duration:** [Add start date] – [Add end date]
+
+---
+
+## 📌 Tasks Completed
+
+| Task | Description | Tech Stack | Link |
+|------|-------------|------------|------|
+| Task 1 | Chatbot for FAQs – answers common questions using NLP | Python, NLTK/SpaCy | [Task1_Chatbot_for_FAQs](./Task1_Chatbot_for_FAQs) |
+| Task 2 | Language Translation Tool – translates text between languages | Python, Flask, MyMemory API, gTTS | [Task2_Language_Translation_Tool](./Task2_Language_Translation_Tool) |
+| Task 3 | Object Detection and Tracking – detects and tracks objects in real time | Python, OpenCV, YOLO | [Task3_Object_Detection_and_Tracking](./Task3_Object_Detection_and_Tracking) |
+
+*(Update table with only the tasks you actually complete, and adjust links/tech as needed.)*
+
+---
+
+## 🗂 Repository Structure
+
+```
+codealpha_tasks/
+├── README.md
+├── Task1_Chatbot_for_FAQs/
+│   ├── README.md
+│   └── (source code)
+├── Task2_Language_Translation_Tool/
+│   ├── README.md
+│   └── (source code)
+└── Task3_Object_Detection_and_Tracking/
+    ├── README.md
+    └── (source code)
+```
+
+Each task folder contains its own README with:
+- Task description
+- Setup/installation instructions
+- How to run
+- Screenshots or demo (if applicable)
+
+---
+
+## 🚀 About CodeAlpha
+
+CodeAlpha is an online internship platform offering hands-on, project-based learning across domains like Web Development, AI, Data Science, and Python Programming.
+
+---
+
+## 📬 Contact
+
+- GitHub: [nooruleman2006](https://github.com/nooruleman2006)
+- LinkedIn: [Add your LinkedIn]
+
+---
+
+*This repository was created to fulfill the task submission requirements of the CodeAlpha Artificial Intelligence Internship.*
