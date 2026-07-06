@@ -12,28 +12,27 @@ This repository contains the tasks completed as part of my **Artificial Intellig
 
 | Task | Description | Tech Stack | Link |
 |------|-------------|------------|------|
-| Task 1 | Chatbot for FAQs – answers common questions using NLP | Python, NLTK/SpaCy | [Task1_Chatbot_for_FAQs](./Task1_Chatbot_for_FAQs) |
-| Task 2 | Language Translation Tool – translates text between languages | Python, Flask, MyMemory API, gTTS | [Task2_Language_Translation_Tool](./Task2_Language_Translation_Tool) |
-| Task 3 | Object Detection and Tracking – detects and tracks objects in real time | Python, OpenCV, YOLO | [Task3_Object_Detection_and_Tracking](./Task3_Object_Detection_and_Tracking) |
-
+| Task 1 | Language Translation Tool – translates text between languages | Python, Flask, MyMemory API, gTTS | [Task1_Language_Translation_Tool](./Task1_Language_Translation_Tool) |
+| Task 2 | Object Detection and Tracking – detects and tracks objects in real time | Python, OpenCV, YOLO | [Task2_Object_Detection_and_Tracking](./Task2_Object_Detection_and_Tracking) |
+| Task 3 | Tech Support FAQ Chatbot – answers common tech support questions using NLP | Python, Flask, SpaCy/TF-IDF | [Task3_Tech_Support_FAQ_Chatbot](./Task3_Tech_Support_FAQ_Chatbot) |
 
 ---
 
 ## 🗂 Repository Structure
 
-```
+\`\`\`
 codealpha_tasks/
 ├── README.md
-├── Task1_Chatbot_for_FAQs/
+├── Task1_Language_Translation_Tool/
 │   ├── README.md
 │   └── (source code)
-├── Task2_Language_Translation_Tool/
+├── Task2_Object_Detection_and_Tracking/
 │   ├── README.md
 │   └── (source code)
-└── Task3_Object_Detection_and_Tracking/
+└── Task3_Tech_Support_FAQ_Chatbot/
     ├── README.md
     └── (source code)
-```
+\`\`\`
 
 Each task folder contains its own README with:
 - Task description
@@ -51,6 +50,4 @@ CodeAlpha is an online internship platform offering hands-on, project-based lear
 ## 📬 Contact
 
 - GitHub: [nooruleman2006](https://github.com/nooruleman2006)
-- LinkedIn: []
-
-
+- LinkedIn: [ps://www.linkedin.com/in/noor-ul-eman]
