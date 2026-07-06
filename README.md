@@ -4,7 +4,7 @@ This repository contains the tasks completed as part of my **Artificial Intellig
 
 **Intern:** Noor Ul Eman
 **Domain:** Artificial Intelligence
-**Duration:** [Add start date] – [Add end date]
+**Duration:** [#rd June, 2026] – [10th July, 2026]
 
 ---
 
@@ -16,7 +16,6 @@ This repository contains the tasks completed as part of my **Artificial Intellig
 | Task 2 | Language Translation Tool – translates text between languages | Python, Flask, MyMemory API, gTTS | [Task2_Language_Translation_Tool](./Task2_Language_Translation_Tool) |
 | Task 3 | Object Detection and Tracking – detects and tracks objects in real time | Python, OpenCV, YOLO | [Task3_Object_Detection_and_Tracking](./Task3_Object_Detection_and_Tracking) |
 
-*(Update table with only the tasks you actually complete, and adjust links/tech as needed.)*
 
 ---
 
@@ -55,6 +54,4 @@ CodeAlpha is an online internship platform offering hands-on, project-based lear
 - GitHub: [nooruleman2006](https://github.com/nooruleman2006)
 - LinkedIn: [Add your LinkedIn]
 
----
 
-*This repository was created to fulfill the task submission requirements of the CodeAlpha Artificial Intelligence Internship.*
