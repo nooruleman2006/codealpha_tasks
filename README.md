@@ -4,7 +4,7 @@ This repository contains the tasks completed as part of my **Artificial Intellig
 
 **Intern:** Noor Ul Eman
 **Domain:** Artificial Intelligence
-**Duration:** [#rd June, 2026] – [10th July, 2026]
+**Duration:** [3rd June, 2026] – [10th July, 2026]
 
 ---
 
@@ -39,7 +39,6 @@ Each task folder contains its own README with:
 - Task description
 - Setup/installation instructions
 - How to run
-- Screenshots or demo (if applicable)
 
 ---
 
@@ -52,6 +51,6 @@ CodeAlpha is an online internship platform offering hands-on, project-based lear
 ## 📬 Contact
 
 - GitHub: [nooruleman2006](https://github.com/nooruleman2006)
-- LinkedIn: [Add your LinkedIn]
+- LinkedIn: []
 
 
