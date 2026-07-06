@@ -20,7 +20,6 @@ This repository contains the tasks completed as part of my **Artificial Intellig
 
 ## 🗂 Repository Structure
 
-\`\`\`
 codealpha_tasks/
 ├── README.md
 ├── Task1_Language_Translation_Tool/
@@ -32,7 +31,6 @@ codealpha_tasks/
 └── Task3_Tech_Support_FAQ_Chatbot/
     ├── README.md
     └── (source code)
-\`\`\`
 
 Each task folder contains its own README with:
 - Task description
